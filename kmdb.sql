@@ -104,14 +104,91 @@
 .headers off
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
--- TODO!
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS studios;
+DROP TABLE IF EXISTS actors;
+DROP TABLE IF EXISTS movies_cast;
+
 
 -- Create new tables, according to your domain model
--- TODO!
+CREATE TABLE studios (
+    studio_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    studio_name TEXT);
+---Aditya CMT: Note on tables "studios"
+-- For this particular use case, I could have added the studios information in tables "movies" itself
+-- However, keeping a seperate table for "studios" has advantages like easier to add more inforamtion for Studios later
+
+
+CREATE TABLE movies (
+    movie_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    movie_name TEXT,
+    year_released INTEGER,
+    mpaa_rating TEXT,
+    studio_id INTEGER);
+
+CREATE TABLE actors (
+    actor_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    actor_name TEXT);
+
+CREATE TABLE movies_cast (
+    cast_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    movie_id INTEGER,
+    actor_id INTEGER,
+    character_name TEXT);
 
 -- Insert data into your database that reflects the sample data shown above
 -- Use hard-coded foreign key IDs when necessary
--- TODO!
+INSERT INTO studios (
+    studio_name) VALUES 
+    ('Warner Bros.');
+
+INSERT INTO movies (
+    movie_name, 
+    year_released, 
+    mpaa_rating, 
+    studio_id) VALUES
+    ('Batman Begins', 2005, 'PG-13', 1),
+    ('The Dark Knight', 2008, 'PG-13', 1),
+    ('The Dark Knight Rises', 2012, 'PG-13', 1);
+
+INSERT INTO actors (
+    actor_name) VALUES
+    ('Christian Bale'),
+    ('Michael Caine'),
+    ('Liam Neeson'),
+    ('Katie Holmes'),
+    ('Gary Oldman'),
+    ('Christian Bale'),
+    ('Heath Ledger'),
+    ('Aaron Eckhart'),
+    ('Michael Caine'),
+    ('Maggie Gyllenhaal'),
+    ('Christian Bale'),
+    ('Gary Oldman'),
+    ('Tom Hardy'),
+    ('Joseph Gordon-Levitt'),
+    ('Anne Hathaway');
+
+INSERT INTO movies_cast (
+    movie_id, 
+    actor_id, 
+    character_name) VALUES
+    (1, 1, 'Bruce Wayne'),
+    (1, 2, 'Alfred'),
+    (1, 3, "Ra's Al Ghul"), --- Aditya CMT: Had to do double quotes as there was a single qote in the name itself.
+    (1, 4, 'Rachel Dawes'),
+    (1, 5, 'Commissioner Gordon'),
+    (2, 6, 'Bruce Wayne'),
+    (2, 7, 'Joker'),
+    (2, 8, 'Harvey Dent'),
+    (2, 9, 'Alfred'),
+    (2, 10, 'Rachel Dawes'),
+    (3, 11, 'Bruce Wayne'),
+    (3, 12, 'Commissioner Gordon'),
+    (3, 13, 'Bane'),
+    (3, 14, 'John Blake'),
+    (3, 15, 'Selina Kyle');
+
 
 -- Prints a header for the movies output
 .print "Movies"
@@ -119,7 +196,8 @@
 .print ""
 
 -- The SQL statement for the movies output
--- TODO!
+SELECT movie_name, year_released, mpaa_rating, studio_name FROM movies
+JOIN studios ON movies.studio_id = studios.studio_id;
 
 -- Prints a header for the cast output
 .print ""
@@ -129,4 +207,6 @@
 
 
 -- The SQL statement for the cast output
--- TODO!
+SELECT movie_name, actor_name, character_name FROM movies_cast
+JOIN movies ON movies_cast.movie_id = movies.movie_id
+JOIN actors ON movies_cast.actor_id = actors.actor_id;
